@@ -13,9 +13,17 @@
         <entry key="..\:/Projects/Module19/app/src/main/res/drawable/baseline_home.xml" value="0.3398148148148148" />
         <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_announcement.xml" value="0.3398148148148148" />
         <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_baseline_cloud_download_24.xml" value="0.3398148148148148" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_favorite.xml" value="0.22135416666666666" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_favorite_border.xml" value="0.22135416666666666" />
         <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_launcher.xml" value="0.22135416666666666" />
         <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22135416666666666" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_menu.xml" value="0.22135416666666666" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_settings.xml" value="0.22135416666666666" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_share.xml" value="0.22135416666666666" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/drawable/ic_star.xml" value="0.22135416666666666" />
         <entry key="..\:/Projects/Module19/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/menu/navigate_menu.xml" value="0.20520833333333333" />
+        <entry key="..\:/Projects/Module19/app/src/main/res/menu/top_app_bar.xml" value="0.20520833333333333" />
         <entry key="..\:/Projects/Module19/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22135416666666666" />
       </map>
     </option>
