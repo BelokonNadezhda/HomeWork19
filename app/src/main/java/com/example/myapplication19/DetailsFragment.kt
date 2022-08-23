@@ -17,6 +17,8 @@ class DetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
     }
 
 
@@ -43,5 +45,39 @@ class DetailsFragment : Fragment() {
         binding.detailsToolbar.title  =film.title
         binding.detailsPoster.setImageResource(film.poster)
         binding.detailsDescription.text = film.description
+
+
+        binding.detailsFabFavorites.setImageResource(
+            if (film.isInFavorites) R.drawable.ic_favorite
+            else R.drawable.ic_favorite_border
+        )
+
+        binding.detailsFabFavorites.setOnClickListener {
+            if (!film.isInFavorites) {
+                binding.detailsFabFavorites.setImageResource(R.drawable.ic_favorite)
+                film.isInFavorites = true
+            } else {
+                binding.detailsFabFavorites.setImageResource(R.drawable.ic_favorite_border)
+                film.isInFavorites = false
+            }
+        }
+
+        binding.detailsFab.setOnClickListener {
+            //Создаем интент
+            val intent = Intent()
+            //Указываем action с которым он запускается
+            intent.action = Intent.ACTION_SEND
+            //Кладем данные о нашем фильме
+            intent.putExtra(
+                Intent.EXTRA_TEXT,
+                "Check out this film: ${film.title} \n\n ${film.description}"
+            )
+            //Указываем MIME тип, чтобы система знала, какое приложения предложить
+            intent.type = "text/plain"
+            //Запускаем наше активити
+            startActivity(Intent.createChooser(intent, "Share To:"))
+        }
+
     }
+
 }
