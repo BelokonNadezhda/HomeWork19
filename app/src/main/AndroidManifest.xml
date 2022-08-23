@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication19">
         <activity
-            android:name=".DetailsActivity"
+            android:name=".DetailsFragment"
             android:exported="true" />
         <activity
             android:name=".MainActivity"
