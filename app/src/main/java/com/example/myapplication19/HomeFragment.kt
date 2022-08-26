@@ -1,18 +1,28 @@
 package com.example.myapplication19
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.annotation.RequiresApi
+import androidx.core.view.get
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapplication19.databinding.FragmentHomeBinding
+import com.example.myapplication19.databinding.MergeHomeScreenContentBinding
 import java.util.*
 
+import android.transition.*
+import android.view.*
+import androidx.transition.Scene
+import androidx.constraintlayout.widget.ConstraintSet
+import java.lang.Math.hypot
+
+
 class HomeFragment : Fragment() {
+
     private lateinit var binding: FragmentHomeBinding
+
 
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
@@ -33,14 +43,17 @@ class HomeFragment : Fragment() {
     ): View? {
         //Инициализируем объект
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
+
         initRV()
+
 
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
@@ -75,7 +88,6 @@ class HomeFragment : Fragment() {
     private fun initRV(){
         //находим наш RV
 
-
         binding.mainRecycler.apply {
             //Инициализируем наш адаптер в конструктор передаем анонимно инициализированный интерфейс,
             //оставим его пока пустым, он нам понадобится во второй части задания
@@ -95,11 +107,9 @@ class HomeFragment : Fragment() {
         //Кладем нашу БД в RV
         filmsAdapter.addItems(filmsDataBase)
 
-
-
-
     }
 
 }
+
 
 
