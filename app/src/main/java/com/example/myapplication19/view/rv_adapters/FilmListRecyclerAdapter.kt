@@ -1,4 +1,4 @@
-package com.example.myapplication19
+package com.example.myapplication19.view.rv_adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,8 +6,9 @@ import android.view.animation.AnimationUtils
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.myapplication19.Film
+import com.example.myapplication19.R
 import com.example.myapplication19.databinding.FilmItemBinding
-import kotlin.coroutines.coroutineContext
 
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmsViewHolder>() {
@@ -42,6 +43,7 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
                 //Обрабатываем нажатие на весь элемент целиком(можно сделать на отдельный элемент
                 //например, картинку) и вызываем метод нашего листенера, который мы получаем из
                 //конструктора адаптера
+
 
                val animation = AnimationUtils.loadAnimation(binding.root.context, R.anim.myanim)
                holder.binding.ratingDonut.startAnimation(animation)
