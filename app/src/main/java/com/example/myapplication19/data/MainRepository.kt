@@ -5,7 +5,7 @@ import com.example.myapplication19.R
 
 class MainRepository {
 
-    val filmsDataBase = listOf(
+    /*val filmsDataBase = listOf(
         Film("Мстители: Финал ", R.drawable.film1, "After the devastating events of Avengers: Infinity War (2018), the universe is in ruins. With the help of remaining allies, the Avengers assemble once more in order to reverse Thanos' actions and restore balance to the universe.", 7.7f),
         Film("Война будущего",
             R.drawable.film2,"A family man is drafted to fight in a future war where the fate of humanity relies on his ability to confront the past.", 6.2f),
@@ -19,5 +19,5 @@ class MainRepository {
             R.drawable.film6,"Arthur Curry, the human-born heir to the underwater kingdom of Atlantis, goes on a quest to prevent a war between the worlds of ocean and land.", 7.1f),
         Film("Лука",
             R.drawable.film7,"On the Italian Riviera, an unlikely but strong friendship grows between a human being and a sea monster disguised as a human.", 9.0f)
-    )
+    )*/
 }
