@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.example.myapplication19.Film
 import com.example.myapplication19.R
+import com.example.myapplication19.data.ApiConstants
 import com.example.myapplication19.databinding.FragmentDetailsBinding
 
 class DetailsFragment : Fragment() {
@@ -45,8 +47,17 @@ class DetailsFragment : Fragment() {
         //Получаем наш фильм из переданного бандла
         val film = arguments?.get("film") as Film
 
+        println("!!!"+film.title)
+
         binding.detailsToolbar.title  =film.title
-        binding.detailsPoster.setImageResource(film.poster)
+
+        //binding.detailsPoster.setImageResource(film.poster)
+       // binding.detailsPoster.setImageResource(R.drawable.film1)
+        Glide.with(this)
+            .load(ApiConstants.IMAGES_URL + "w780" + film.poster)
+            .centerCrop()
+            .into(binding.detailsPoster)
+
         binding.detailsDescription.text = film.description
 
 

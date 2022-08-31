@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.myapplication19.Film
 import com.example.myapplication19.R
+import com.example.myapplication19.data.ApiConstants
 import com.example.myapplication19.databinding.FilmItemBinding
 
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
@@ -89,6 +90,7 @@ class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : 
             //Glide.with(itemView)
             Glide.with(binding.root)
                 //Загружаем сам ресурс
+                //.load(film.poster)
                 .load(film.poster)
                 //Центруем изображение
                 .centerCrop()

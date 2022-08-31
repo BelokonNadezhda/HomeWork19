@@ -69,6 +69,7 @@ class HomeFragment : Fragment() {
 
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
             filmsDataBase = it
+            println("!!!"+filmsDataBase.get(0).title)
             //filmsAdapter.addItems(it)
         })
 
@@ -122,7 +123,7 @@ class HomeFragment : Fragment() {
             addItemDecoration(decorator)
         }
         //Кладем нашу БД в RV
-        filmsAdapter.addItems(filmsDataBase)
+        //filmsAdapter.addItems(filmsDataBase)
 
     }
 
