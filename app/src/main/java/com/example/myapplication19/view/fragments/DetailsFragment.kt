@@ -54,7 +54,7 @@ class DetailsFragment : Fragment() {
         //binding.detailsPoster.setImageResource(film.poster)
        // binding.detailsPoster.setImageResource(R.drawable.film1)
         Glide.with(this)
-            .load(ApiConstants.IMAGES_URL + "w780" + film.poster)
+            .load(film.poster)
             .centerCrop()
             .into(binding.detailsPoster)
 
