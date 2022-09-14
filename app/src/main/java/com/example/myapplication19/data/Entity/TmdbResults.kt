@@ -11,8 +11,8 @@ data class TmdbResults(
     val totalPages: Int,
     @SerializedName("total_results")
     val totalResults: Int*/
-  @SerializedName("total")
-  val total: Int,
-  @SerializedName("items")
-  val tmdbFilms: List<Item>
+  @SerializedName("pagesCount")
+  val pagesCount: Int,
+  @SerializedName("films")
+  val tmdbFilmItems: List<FilmItem>
 )

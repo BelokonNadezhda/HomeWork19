@@ -14,7 +14,7 @@ import com.example.myapplication19.databinding.FilmItemBinding
 //в параметр передаем слушатель, чтобы мы потом могли обрабатывать нажатия из класса Activity
 class FilmListRecyclerAdapter(private val clickListener: OnItemClickListener) : RecyclerView.Adapter<FilmListRecyclerAdapter.FilmsViewHolder>() {
     //Здесь у нас хранится список элементов для RV
-    private val items = mutableListOf<Film>()
+    val items = mutableListOf<Film>()
     private lateinit var binding: FilmItemBinding
 
     //Этот метод нужно переопределить на возврат количества элементов в списке RV
