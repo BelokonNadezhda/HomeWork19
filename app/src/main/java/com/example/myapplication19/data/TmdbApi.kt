@@ -12,8 +12,9 @@ interface TmdbApi {
     @Headers( "X-API-KEY: 04bfc43f-167c-4cbc-b307-af88f19bb393")
     @GET(BASE_URL)
     fun getFilms(
-        @Query("year") year: Int,
-        @Query("month") month : String
+        @Query("type") type : String,
+        @Query("page") page: Int
+
        // @Query("page") page: Int
     ): Call<TmdbResults>
 }

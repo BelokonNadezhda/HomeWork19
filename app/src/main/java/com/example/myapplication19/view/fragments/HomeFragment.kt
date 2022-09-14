@@ -24,7 +24,6 @@ class HomeFragment : Fragment() {
     private val binding: FragmentHomeBinding
       get() = _binding!!
 
-
     private lateinit var filmsAdapter: FilmListRecyclerAdapter
 
     private val viewModel by lazy {
@@ -43,7 +42,10 @@ class HomeFragment : Fragment() {
         }
 
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,13 +66,12 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         AnimationHelper.performFragmentCircularRevealAnimation(binding.homeFragmentRoot, requireActivity(), 1)
-
+        initPullToRefresh()
         initRV()
 
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
             filmsDataBase = it
-            println("!!!"+filmsDataBase.get(0).title)
-            //filmsAdapter.addItems(it)
+            filmsAdapter.addItems(it)
         })
 
         binding.searchView.setOnClickListener {
@@ -101,6 +102,19 @@ class HomeFragment : Fragment() {
                 return true
             }
         })
+    }
+
+    private fun initPullToRefresh() {
+          //Вешаем слушатель, чтобы вызвался pull to refresh
+           binding.pullToRefresh.setOnRefreshListener {
+            //Чистим адаптер(items нужно будет сделать паблик или создать для этого публичный метод)
+
+            filmsAdapter.items.clear()
+            //Делаем новый запрос фильмов на сервер
+            viewModel.getFilms()
+            //Убираем крутящиеся колечко
+            binding.pullToRefresh.isRefreshing = false
+        }
     }
 
     private fun initRV(){

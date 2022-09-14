@@ -22,5 +22,11 @@
         android:title="@string/menu_selections_title"
         app:showAsAction="withText"/>
 
+    <item
+        android:id="@+id/settings"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/menu_settings_title"
+        app:showAsAction="withText"/>
+
 
 </menu>
