@@ -26,6 +26,7 @@ class SettingsFragmentViewModel : ViewModel() {
 
     fun putCategoryProperty(category: String) {
         //Сохраняем в настройки
+        println("!!!putCategoryProperty"+category)
         interactor.saveDefaultCategoryToPreferences(category)
         //И сразу забираем, чтобы сохранить состояние в модели
         getCategoryProperty()

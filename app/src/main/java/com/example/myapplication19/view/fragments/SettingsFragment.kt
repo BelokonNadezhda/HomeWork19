@@ -32,15 +32,20 @@ class SettingsFragment : Fragment() {
         //Подключаем анимации и передаем номер позиции у кнопки в нижнем меню
         AnimationHelper.performFragmentCircularRevealAnimation(binding.settingsFragmentRoot, requireActivity(), 5)
         //Слушаем, какой у нас сейчас выбран вариант в настройках
-        viewModel.categoryPropertyLifeData.observe(viewLifecycleOwner, Observer<String> {
+        viewModel.categoryPropertyLifeData.observe(viewLifecycleOwner, {
+            //println("!!!it="+it)
             when(it) {
                 ApiConstants.TOP_100 -> binding.radioGroup.check(R.id.radio_popular)
                 ApiConstants.TOP_250 -> binding.radioGroup.check(R.id.radio_top_rated)
                 ApiConstants.TOP_AWAIT -> binding.radioGroup.check(R.id.radio_upcoming)
-              }
+            }
+
         })
+
+
         //Слушатель для отправки нового состояния в настройки
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            //println("!!!checkedId"+checkedId)
             when(checkedId) {
                 R.id.radio_popular -> viewModel.putCategoryProperty(ApiConstants.TOP_100)
                 R.id.radio_top_rated -> viewModel.putCategoryProperty(ApiConstants.TOP_250)

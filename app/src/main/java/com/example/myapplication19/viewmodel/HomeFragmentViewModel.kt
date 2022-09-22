@@ -7,6 +7,7 @@ import com.example.myapplication19.Film
 import com.example.myapplication19.domain.Interactor
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import java.util.concurrent.Executors
 import javax.inject.Inject
 
 class HomeFragmentViewModel : ViewModel(), KoinComponent {
@@ -27,6 +28,10 @@ class HomeFragmentViewModel : ViewModel(), KoinComponent {
             }
 
             override fun onFailure() {
+                //filmsListLiveData.postValue(interactor.getFilmsFromDB())
+                Executors.newSingleThreadExecutor().execute {
+                    filmsListLiveData.postValue(interactor.getFilmsFromDB())
+                }
             }
         })
     }

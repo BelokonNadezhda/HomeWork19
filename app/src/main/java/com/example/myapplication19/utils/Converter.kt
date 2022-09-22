@@ -10,7 +10,7 @@ object Converter {
         list?.forEach {
             result.add(Film(
                 title = it.nameRu,
-                idfilm = it.filmId,
+                //idfilm = it.filmId,
                 poster = it.posterUrl,
                 description = it.nameRu,
                 rating = it.rating.toDouble(),

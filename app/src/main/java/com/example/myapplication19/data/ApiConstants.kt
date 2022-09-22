@@ -5,6 +5,6 @@ object ApiConstants {
     const val IMAGES_URL = "https://kinopoiskapiunofficial.tech/images/posters/kp/"
     const val BASE_URL = "https://kinopoiskapiunofficial.tech/api/v2.2/films/top/"
     const val TOP_100 = "TOP_100_POPULAR_FILMS"
-    const val TOP_250 = "TOP_250_BEST_FILM"
-    const val TOP_AWAIT = "TOP_AWAIT_FILM"
+    const val TOP_250 = "TOP_250_BEST_FILMS"
+    const val TOP_AWAIT = "TOP_AWAIT_FILMS"
 }
