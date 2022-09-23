@@ -10,6 +10,7 @@ import com.example.myapplication19.databinding.FragmentHomeBinding
 import java.util.*
 
 import android.view.*
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication19.*
 import com.example.myapplication19.utils.AnimationHelper
@@ -70,13 +71,17 @@ class HomeFragment : Fragment() {
         initRV()
 
         viewModel.filmsListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
-            filmsDataBase = it
+           // filmsDataBase = it
             filmsAdapter.addItems(it)
         })
 
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
+
+        viewModel.showProgressBar.observe(viewLifecycleOwner, androidx.lifecycle.Observer<Boolean> {
+            binding.progressBar.isVisible = it
+        })
 
         //Подключаем слушателя изменений введенного текста в поиска
         binding.searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener,

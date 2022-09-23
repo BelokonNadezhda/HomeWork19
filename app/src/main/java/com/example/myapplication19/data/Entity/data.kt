@@ -26,4 +26,3 @@ data class Film(
     @ColumnInfo(name = "vote_average") var rating: Double = 0.0, //Приходит нецелое число с API
     var isInFavorites: Boolean = false
 ) : Parcelable
-

@@ -1,5 +1,6 @@
 package com.example.myapplication19.domain
 
+import androidx.lifecycle.LiveData
 import com.example.myapplication19.Film
 import com.example.myapplication19.data.ApiConstants
 import com.example.myapplication19.data.Entity.TmdbResults
@@ -29,7 +30,7 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
                     //repo.putToDb(film = it)
                     repo.putToDb(list)
                 }
-                callback.onSuccess(list)
+                callback.onSuccess()
             }
 
             override fun onFailure(call: retrofit2.Call<TmdbResults>, t: Throwable) {
@@ -48,6 +49,7 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
     //Метод для получения настроек
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
-    fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
+    //fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
+    fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
 
 }
