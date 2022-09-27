@@ -17,10 +17,13 @@ import com.example.myapplication19.utils.AnimationHelper
 import com.example.myapplication19.view.rv_adapters.FilmListRecyclerAdapter
 import com.example.myapplication19.view.rv_adapters.TopSpacingItemDecoration
 import com.example.myapplication19.viewmodel.HomeFragmentViewModel
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 
 
 class HomeFragment : Fragment() {
 
+    private lateinit var scope: CoroutineScope
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding
       get() = _binding!!
@@ -70,18 +73,36 @@ class HomeFragment : Fragment() {
         initPullToRefresh()
         initRV()
 
-        viewModel.filmsListLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
+
+        /*viewModel.filmsListData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
            // filmsDataBase = it
             filmsAdapter.addItems(it)
-        })
+        })*/
+        scope = CoroutineScope(Dispatchers.IO).also { scope ->
+            scope.launch {
+                viewModel.filmsListData.collect {
+                    withContext(Dispatchers.Main) {
+                        filmsAdapter.addItems(it)
+                        filmsDataBase = it
+                    }
+                }
+            }
+            scope.launch {
+                for (element in viewModel.showProgressBar) {
+                    launch(Dispatchers.Main) {
+                        binding.progressBar.isVisible = element
+                    }
+                }
+            }
+        }
 
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
 
-        viewModel.showProgressBar.observe(viewLifecycleOwner, androidx.lifecycle.Observer<Boolean> {
+        /*viewModel.showProgressBar.observe(viewLifecycleOwner, androidx.lifecycle.Observer<Boolean> {
             binding.progressBar.isVisible = it
-        })
+        })*/
 
         //Подключаем слушателя изменений введенного текста в поиска
         binding.searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener,
@@ -144,6 +165,11 @@ class HomeFragment : Fragment() {
         //Кладем нашу БД в RV
         //filmsAdapter.addItems(filmsDataBase)
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+        scope.cancel()
     }
 
 }

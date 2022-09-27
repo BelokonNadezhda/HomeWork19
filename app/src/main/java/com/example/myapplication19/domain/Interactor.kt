@@ -9,14 +9,21 @@ import com.example.myapplication19.data.PreferenceProvider
 import com.example.myapplication19.data.TmdbApi
 import com.example.myapplication19.utils.Converter
 import com.example.myapplication19.viewmodel.HomeFragmentViewModel
-
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 
 class Interactor(private val repo: MainRepository, private val retrofitService: TmdbApi, private val preferences: PreferenceProvider) {
     //В конструктор мы будм передавать коллбэк из вьюмоделе, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, котороую нужно загрузить (это для пагинации)
-    fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.ApiCallback) {
+
+    val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    var progressBarState = Channel<Boolean>(Channel.CONFLATED)
+
+   /* fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.ApiCallback) {
 
         println("!!!getDefaultCategoryFromPreferences()="+getDefaultCategoryFromPreferences())
         retrofitService.getFilms(getDefaultCategoryFromPreferences(),1).enqueue(object :
@@ -41,6 +48,34 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
 
 
     }
+    */
+
+    fun getFilmsFromApi(page: Int) {
+        //Показываем ProgressBar
+        scope.launch {
+            progressBarState.send(true)
+        }
+        //Метод getDefaultCategoryFromPreferences() будет получать при каждом запросе нужный нам список фильмов
+        retrofitService.getFilms(getDefaultCategoryFromPreferences(), 1).enqueue(object : retrofit2.Callback<TmdbResults>  {
+            override fun onResponse(call: retrofit2.Call<TmdbResults>, response: retrofit2.Response<TmdbResults>) {
+                val list = Converter.convertApiListToDTOList(response.body()?.tmdbFilmItems)
+                //Кладем фильмы в бд
+                //В случае успешного ответа кладем фильмы в БД и выключаем ProgressBar
+                scope.launch {
+                    repo.putToDb(list)
+                    progressBarState.send(false)
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<TmdbResults>, t: Throwable) {
+                //В случае провала выключаем ProgressBar
+                scope.launch {
+                    progressBarState.send(false)
+                }
+            }
+        })
+    }
+
     //Метод для сохранения настроек
     fun saveDefaultCategoryToPreferences(category: String) {
 
@@ -49,7 +84,7 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
     //Метод для получения настроек
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
-    //fun getFilmsFromDB(): List<Film> = repo.getAllFromDB()
-    fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
 
+    //fun getFilmsFromDB(): LiveData<List<Film>> = repo.getAllFromDB()
+    fun getFilmsFromDB(): Flow<List<Film>> = repo.getAllFromDB()
 }
