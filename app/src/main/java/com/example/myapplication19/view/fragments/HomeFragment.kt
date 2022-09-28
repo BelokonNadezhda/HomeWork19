@@ -14,16 +14,19 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication19.*
 import com.example.myapplication19.utils.AnimationHelper
+import com.example.myapplication19.utils.AutoDisposable
+import com.example.myapplication19.utils.addTo
 import com.example.myapplication19.view.rv_adapters.FilmListRecyclerAdapter
 import com.example.myapplication19.view.rv_adapters.TopSpacingItemDecoration
 import com.example.myapplication19.viewmodel.HomeFragmentViewModel
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 
 class HomeFragment : Fragment() {
 
-    private lateinit var scope: CoroutineScope
+    private val autoDisposable = AutoDisposable()
+
     private var _binding: FragmentHomeBinding? = null
     private val binding: FragmentHomeBinding
       get() = _binding!!
@@ -48,6 +51,7 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        autoDisposable.bindTo(lifecycle)
         retainInstance = true
     }
 
@@ -74,35 +78,27 @@ class HomeFragment : Fragment() {
         initRV()
 
 
-        /*viewModel.filmsListData.observe(viewLifecycleOwner, androidx.lifecycle.Observer<List<Film>> {
-           // filmsDataBase = it
-            filmsAdapter.addItems(it)
-        })*/
-        scope = CoroutineScope(Dispatchers.IO).also { scope ->
-            scope.launch {
-                viewModel.filmsListData.collect {
-                    withContext(Dispatchers.Main) {
-                        filmsAdapter.addItems(it)
-                        filmsDataBase = it
-                    }
-                }
+        viewModel.filmsListData
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { list ->
+                filmsAdapter.addItems(list)
+                filmsDataBase = list
             }
-            scope.launch {
-                for (element in viewModel.showProgressBar) {
-                    launch(Dispatchers.Main) {
-                        binding.progressBar.isVisible = element
-                    }
-                }
+            .addTo(autoDisposable)
+
+
+        viewModel.showProgressBar
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.progressBar.isVisible = it
             }
-        }
+            .addTo(autoDisposable)
 
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
-
-        /*viewModel.showProgressBar.observe(viewLifecycleOwner, androidx.lifecycle.Observer<Boolean> {
-            binding.progressBar.isVisible = it
-        })*/
 
         //Подключаем слушателя изменений введенного текста в поиска
         binding.searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener,
@@ -169,7 +165,7 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        scope.cancel()
+
     }
 
 }

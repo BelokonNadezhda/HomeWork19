@@ -1,12 +1,8 @@
 package com.example.myapplication19.data
 
-import android.content.ContentValues
-import android.database.Cursor
-import androidx.lifecycle.LiveData
 import com.example.myapplication19.Film
 import com.example.myapplication19.data.dao.FilmDao
-import kotlinx.coroutines.flow.Flow
-import java.util.concurrent.Executors
+import io.reactivex.rxjava3.core.Observable
 
 class MainRepository(private val filmDao: FilmDao) {
 
@@ -17,8 +13,6 @@ class MainRepository(private val filmDao: FilmDao) {
         //}
     }
 
-   //fun getAllFromDB(): List<Film> {
-  // fun getAllFromDB(): LiveData<List<Film>> = filmDao.getCachedFilms()
-   fun getAllFromDB(): Flow<List<Film>> = filmDao.getCachedFilms()
+   fun getAllFromDB(): Observable<List<Film>> = filmDao.getCachedFilms()
 
 }
