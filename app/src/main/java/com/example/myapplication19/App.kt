@@ -12,15 +12,7 @@ class App : Application() {
     lateinit var dagger: AppComponent
 
     override fun onCreate() {
-        /* super.onCreate()
-        startKoin {
-            //Прикрепляем контекст
-            androidContext(this@App)
-            //(Опционально) подключаем зависимость
-            androidLogger()
-            //Инициализируем модули
-            modules(listOf(DI.mainModule))
-            */
+
         super.onCreate()
         instance = this
         //Создаем компонент

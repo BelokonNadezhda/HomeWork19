@@ -10,6 +10,7 @@ import com.example.myapplication19.databinding.FragmentHomeBinding
 import java.util.*
 
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication19.*
@@ -19,8 +20,14 @@ import com.example.myapplication19.utils.addTo
 import com.example.myapplication19.view.rv_adapters.FilmListRecyclerAdapter
 import com.example.myapplication19.view.rv_adapters.TopSpacingItemDecoration
 import com.example.myapplication19.viewmodel.HomeFragmentViewModel
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Observable
+
+import io.reactivex.rxjava3.kotlin.subscribeBy
+import java.util.concurrent.TimeUnit
 
 
 class HomeFragment : Fragment() {
@@ -69,6 +76,13 @@ class HomeFragment : Fragment() {
         super.onDestroy()
     }
 
+
+
+
+
+
+
+
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -99,6 +113,55 @@ class HomeFragment : Fragment() {
         binding.searchView.setOnClickListener {
             binding.searchView.isIconified = false
         }
+
+
+
+        Observable.create(ObservableOnSubscribe<String> { subscriber ->
+            //Вешаем слушатель на клавиатуру
+            binding.searchView.setOnQueryTextListener(object :
+            //Вызывается на ввод символов
+                SearchView.OnQueryTextListener,
+                androidx.appcompat.widget.SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String): Boolean {
+                    filmsAdapter.items.clear()
+                    subscriber.onNext(newText)
+                    return false
+                }
+                //Вызывается по нажатию кнопки "Поиск"
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    subscriber.onNext(query)
+                    return false
+                }
+            })
+        })
+            .subscribeOn(Schedulers.io())
+            .map {
+                it.toLowerCase(Locale.getDefault()).trim()
+            }
+            .debounce(800, TimeUnit.MILLISECONDS)
+            .filter {
+                //Если в поиске пустое поле, возвращаем список фильмов по умолчанию
+                viewModel.getFilms()
+                it.isNotBlank()
+            }
+            .flatMap {
+                viewModel.getSearchResult(it)
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onError = {
+                    Toast.makeText(requireContext(), "Что-то пошло не так", Toast.LENGTH_SHORT).show()
+                },
+                onNext = {
+                    filmsAdapter.addItems(it)
+                }
+            )
+            .addTo(autoDisposable)
+
+
+
+
 
         //Подключаем слушателя изменений введенного текста в поиска
         binding.searchView.setOnQueryTextListener(object :  SearchView.OnQueryTextListener,

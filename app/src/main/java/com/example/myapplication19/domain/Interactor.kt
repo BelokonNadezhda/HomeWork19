@@ -52,4 +52,9 @@ class Interactor(private val repo: MainRepository, private val retrofitService: 
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
     fun getFilmsFromDB(): Observable<List<Film>> = repo.getAllFromDB()
+
+    fun getSearchResultFromApi(search: String): Observable<List<Film>> = retrofitService.getFilmFromSearch(getDefaultCategoryFromPreferences(),1,search)
+        .map {
+            Converter.convertApiListToDTOList(it.tmdbFilmItems)
+        }
 }

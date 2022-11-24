@@ -6,16 +6,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
-/*@Parcelize
-data class Film(
-    val title: String,
-    val poster: String,
-    val idfilm: Int,
-    val description: String,
-    var rating: Double = 0.0,
-    var isInFavorites: Boolean = false
-) : Parcelable
-*/
 @Parcelize
 @Entity(tableName = "cached_films", indices = [androidx.room.Index(value = ["title"], unique = true)])
 data class Film(
