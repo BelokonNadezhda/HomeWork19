@@ -1,48 +1,60 @@
 package com.example.myapplication19.domain
 
-import com.example.myapplication19.data.ApiConstants
+
+import com.example.myapplication19.Film
 import com.example.myapplication19.data.Entity.TmdbResults
 import com.example.myapplication19.data.MainRepository
 import com.example.myapplication19.data.PreferenceProvider
 import com.example.myapplication19.data.TmdbApi
 import com.example.myapplication19.utils.Converter
-import com.example.myapplication19.viewmodel.HomeFragmentViewModel
-
-
-
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class Interactor(private val repo: MainRepository, private val retrofitService: TmdbApi, private val preferences: PreferenceProvider) {
     //В конструктор мы будм передавать коллбэк из вьюмоделе, чтобы реагировать на то, когда фильмы будут получены
     //и страницу, котороую нужно загрузить (это для пагинации)
-    fun getFilmsFromApi(page: Int, callback: HomeFragmentViewModel.ApiCallback) {
 
+    var progressBarState: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
-        retrofitService.getFilms(getDefaultCategoryFromPreferences(),1).enqueue(object :
-        //retrofitService.getFilms(ApiConstants.TOP_100,1).enqueue(object :
-            retrofit2.Callback<TmdbResults> {
+    fun getFilmsFromApi(page: Int) {
+        //Показываем ProgressBar
+        progressBarState.onNext(true)
+
+        //Метод getDefaultCategoryFromPreferences() будет получать при каждом запросе нужный нам список фильмов
+        retrofitService.getFilms(getDefaultCategoryFromPreferences(), 1).enqueue(object : retrofit2.Callback<TmdbResults>  {
             override fun onResponse(call: retrofit2.Call<TmdbResults>, response: retrofit2.Response<TmdbResults>) {
-                //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
-                //При успехе мы вызываем метод передаем onSuccess и в этот коллбэк список фильмов
                 val list = Converter.convertApiListToDTOList(response.body()?.tmdbFilmItems)
-            //println("!!!"+list.toString())
-
-                callback.onSuccess(list)
+                //Кладем фильмы в бд
+                //В случае успешного ответа кладем фильмы в БД и выключаем ProgressBar
+               Completable.fromSingle<List<Film>> {
+                    repo.putToDb(list)
+                }
+                    .subscribeOn(Schedulers.io())
+                    .subscribe()
+                progressBarState.onNext(false)
             }
 
             override fun onFailure(call: retrofit2.Call<TmdbResults>, t: Throwable) {
-                //В случае провала вызываем другой метод коллбека
-                callback.onFailure()
+                //В случае провала выключаем ProgressBar
+                progressBarState.onNext(false)
             }
         })
-
-
     }
+
     //Метод для сохранения настроек
     fun saveDefaultCategoryToPreferences(category: String) {
+
         preferences.saveDefaultCategory(category)
     }
     //Метод для получения настроек
     fun getDefaultCategoryFromPreferences() = preferences.getDefaultCategory()
 
+    fun getFilmsFromDB(): Observable<List<Film>> = repo.getAllFromDB()
 
+    fun getSearchResultFromApi(search: String): Observable<List<Film>> = retrofitService.getFilmFromSearch(getDefaultCategoryFromPreferences(),1,search)
+        .map {
+            Converter.convertApiListToDTOList(it.tmdbFilmItems)
+        }
 }

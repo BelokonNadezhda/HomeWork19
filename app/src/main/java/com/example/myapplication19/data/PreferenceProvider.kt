@@ -1,10 +1,9 @@
 package com.example.myapplication19.data
 
+
 import android.content.Context
 import android.content.SharedPreferences
-import android.provider.Settings.Global.putString
 import androidx.core.content.edit
-
 
 class PreferenceProvider(context: Context) {
     //Нам нужен контекст приложения
@@ -31,13 +30,13 @@ class PreferenceProvider(context: Context) {
     //Сохраняем категорию
     fun saveDefaultCategory(category: String) {
        //preference.edit { putString(ApiConstants.TOP_250, category) }
-        println("!!!category = "+category)
+        println("!!!СОХРАНЕНИЕ category = "+category)
         preference.edit { putString(KEY_DEFAULT_CATEGORY, category) }
     }
     //Забираем категорию
     fun getDefaultCategory(): String {
         //return preference.getString(ApiConstants.TOP_250, ApiConstants.TOP_AWAIT) ?: ApiConstants.TOP_AWAIT
-        println("!!!"+preference.getString(KEY_DEFAULT_CATEGORY, DEFAULT_CATEGORY) ?: DEFAULT_CATEGORY)
+        println("!!!getDefaultCategory()="+preference.getString(KEY_DEFAULT_CATEGORY, DEFAULT_CATEGORY) ?: DEFAULT_CATEGORY)
         return preference.getString(KEY_DEFAULT_CATEGORY, DEFAULT_CATEGORY) ?: DEFAULT_CATEGORY
     }
     //Ключи для наших настроек, по ним мы их будем получать
